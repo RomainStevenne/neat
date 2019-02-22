@@ -9,6 +9,11 @@ class Neat_Agent:
         # is_bias = a bool who say if er is one bias node
         # innovation dic = a dict who have: a link in key and an innovation number in object
 
+        self.input_size = input_size
+        self.output_size = output_size
+        self.is_bias = is_bias
+        self.innovation_dic = innovation_dic
+
         # a liste who contain all the Agent nodes
         self.node_genome = []
 
@@ -16,6 +21,21 @@ class Neat_Agent:
         self.connection_genome = []
 
         self.innovation_dic = innovation_dic
+
+    def _init_nodes(self):
+        # init the nodes 
+
+        # add the input nodes in the node_genome
+        for i in range(self.input_size):
+            self.node_genome.append(Node(i, "input"))
+
+        # add the output nodes in the node_genome
+        for _ in range(self.output_size):
+            self.node_genome.append(Node(len(self.node_genome), "output"))
+
+        # add the bias node if er is 
+        if self.is_bias:
+            self.node_genome.append(Node(len(self.node_genome), "bias"))
 
 # a node class
 class Node:
