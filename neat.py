@@ -143,10 +143,21 @@ class Connection:
 
         self.input_node_id = input_node_id
         self.output_node_id = output_node_id
-        self.input_node_id = input_node_id
+        self.innovation = innovation
 
         # set a random weight between -2 and 2
         self.weight = 4 * (rd.random() - .5)
 
         # a number who say if the connection is enable or not
         self.is_enable = True
+
+    def clone(self):
+        # clone the connection
+        new = Connection(self.input_node_id, self.output_node_id, self.innovation)
+        
+        # pass the value to the new object
+        new.is_enable = self.is_enable
+        new.weight = self.weight
+
+        return new
+        
