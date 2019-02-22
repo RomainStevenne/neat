@@ -91,7 +91,11 @@ class Neat_Agent:
                 previous_out_id = connection.output_node_id
 
                 # create and push  the new node
-                new_id = len(self.node_genome)
+                # get the max node id
+                new_id = - 1
+                for node in self.node_genome:
+                    if new_id <= node.id: new_id = node.id
+
                 self.node_genome.append(new_id, "transition")
 
                 # create and push the new 2 connections
@@ -112,6 +116,78 @@ class Neat_Agent:
                 self.connection_genome.append(Connection(previous_inp_id, new_id, connection_a_innovation))
                 self.connection_genome.append(Connection(new_id, previous_out_id, connection_b_innovation))
 
+    def crossover(self, other):
+        # create a new Agent based on the self and other agent
+
+        # creat the baby with the same basic node_genome as self and other
+        baby = Neat_Agent(self.input_size, self.output_size, self.is_bias, self.innovation_dic)
+
+        # get the connections genomes
+        parent_a_genome = self.connection_genome
+        parent_b_genome = other.connection_genome
+
+        # create the baby_connection_genome
+        baby_connection_genome = []
+
+        for i in range(self.innovation_dic):
+            a_connection = None
+            b_connection = None
+
+            # get the connection for parent a and parent b with the i inovetion number if er is 
+            for connection in parent_a_genome:
+                if connection.innovation == i:
+                    a_connection = connection
+
+            for connection in parent_b_genome:
+                if connection.innovation == i:
+                    b_connection = connection
+
+            # conditions for push a connection in the baby connection genome
+            if a_connection and b_connection:
+                if not a_connection.is_enable:
+                    baby_connection_genome.append(a_connection.clone())
+
+                elif not b_connection.is_enable:
+                    baby_connection_genome.append(b_connection.clone())
+
+                else:
+                    selected = rd.choice((a_connection, b_connection))
+                    baby_connection_genome.append(selected.clone())
+
+            elif a_connection:
+                baby_connection_genome.append(a_connection.clone())
+
+            elif b_connection:
+                baby_connection_genome.append(b_connection.clone())
+
+        # get the nodes id for the baby
+        nodes_id = []
+        
+        for connection in baby_connection_genome:
+            inp = connection.input_node_id
+            out = connection.output_node_id
+
+            if inp not in nodes_id: nodes_id.append(inp)
+            if out not in nodes_id: nodes_id.append(out)
+
+        # create the node who doesn't exist for baby
+        for i in nodes_id:
+
+            # check if node exist
+            exist = False
+            for node in baby.node_genome:
+                if node.id == i:
+                    exist = True
+
+            # creat the node if not exist
+            if not exist:        
+                node = Node(i, "transition")
+                baby.node_genome.append(node)
+
+        # push the baby connection genome in baby
+        baby.connection_genome = baby_connection_genome
+
+        return baby
 
 # a node class
 class Node:
