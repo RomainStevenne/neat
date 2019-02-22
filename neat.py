@@ -79,7 +79,7 @@ class Neat_Agent:
         # 1 between the previous inp and the new node
         # 2 between the new node and the previous out 
 
-        if rd.random() <= prob:
+        if rd.random() <= prob and self.connection_genome != []:
             # get a random connection from the connection genome
             connection = rd.choice(self.connection_genome)
 
@@ -96,7 +96,7 @@ class Neat_Agent:
                 for node in self.node_genome:
                     if new_id <= node.id: new_id = node.id
 
-                self.node_genome.append(new_id, "transition")
+                self.node_genome.append(Node(new_id, "transition"))
 
                 # create and push the new 2 connections
                 # check and get the innovations numbers
@@ -129,7 +129,7 @@ class Neat_Agent:
         # create the baby_connection_genome
         baby_connection_genome = []
 
-        for i in range(self.innovation_dic):
+        for i in range(len(self.innovation_dic)):
             a_connection = None
             b_connection = None
 
@@ -246,3 +246,20 @@ class Connection:
                    out: {self.output_node_id}
                    inov: {self.innovation}
                    wheight: {self.weight}"""
+
+# debug
+if __name__ == "__main__":
+    inov = {}
+
+    a = Neat_Agent(3, 3, True, inov)
+    a.add_connection_mutation(1)
+    a.add_connection_mutation(1)
+    a.add_node_mutation(1)
+
+    b = Neat_Agent(3, 3, True, inov)
+    b.add_connection_mutation(1)
+    b.add_connection_mutation(1)
+    b.add_node_mutation(1)
+
+    c = a.crossover(b)
+    
