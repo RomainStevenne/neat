@@ -71,6 +71,48 @@ class Neat_Agent:
             # creat the connection and append it in the genome
             self.connection_genome.append(Connection(inp.id, out.id, innov))
 
+    def add_node_mutation(self, prob):
+        # add a new node with a probability of prob
+        # prob = a number between 0 and 1 who give the probability of gettin a new connection
+        # this node will disable a connection
+        # and creat 2 connections: 
+        # 1 between the previous inp and the new node
+        # 2 between the new node and the previous out 
+
+        if rd.random() <= prob:
+            # get a random connection from the connection genome
+            connection = rd.choice(self.connection_genome)
+
+            # check if the connection is enable
+            if connection.is_enable:
+                # disable the connection and get the previous inp and out ids
+                connection.is_enable = False
+                previous_inp_id = connection.input_node_id
+                previous_out_id = connection.output_node_id
+
+                # create and push  the new node
+                new_id = len(self.node_genome)
+                self.node_genome.append(new_id, "transition")
+
+                # create and push the new 2 connections
+                # check and get the innovations numbers
+                if (previous_inp_id, new_id) in self.innovation_dic:
+                    connection_a_innovation = self.innovation_dic[(previous_inp_id, new_id)]
+                else:
+                    connection_a_innovation = len(self.innovation_dic)
+                    self.innovation_dic[(previous_inp_id, new_id)] = connection_a_innovation
+
+                if (new_id, previous_out_id) in self.innovation_dic:
+                    connection_b_innovation = self.innovation_dic[(new_id, previous_out_id)]
+                else:
+                    connection_b_innovation = len(self.innovation_dic)
+                    self.innovation_dic[(new_id, previous_out_id)] = connection_b_innovation
+
+                # create and push
+                self.connection_genome.append(Connection(previous_inp_id, new_id, connection_a_innovation))
+                self.connection_genome.append(Connection(new_id, previous_out_id, connection_b_innovation))
+
+
 # a node class
 class Node:
 
@@ -90,6 +132,7 @@ class Node:
         # reste the node value
         self.value = 0 if self.type != "bias" else 1
 
+
 # a connection class
 class Connection:
 
@@ -102,8 +145,8 @@ class Connection:
         self.output_node_id = output_node_id
         self.input_node_id = input_node_id
 
-        # set a random weight
-        self.weight = 2 * (rd.random() - .5)
+        # set a random weight between -2 and 2
+        self.weight = 4 * (rd.random() - .5)
 
         # a number who say if the connection is enable or not
         self.is_enable = True
