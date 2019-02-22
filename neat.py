@@ -245,4 +245,4 @@ class Connection:
         return f"""in: {self.input_node_id}
                    out: {self.output_node_id}
                    inov: {self.innovation}
-                   wheight: {self.wheight}"""
+                   wheight: {self.weight}"""
