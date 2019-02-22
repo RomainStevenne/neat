@@ -208,6 +208,10 @@ class Node:
         # reste the node value
         self.value = 0 if self.type != "bias" else 1
 
+    def __str__(self):
+        return f"""type: {self.type}
+                   id: {self.id}
+                   value: {self.value}"""
 
 # a connection class
 class Connection:
@@ -237,3 +241,8 @@ class Connection:
 
         return new
         
+    def __str__(self):
+        return f"""in: {self.input_node_id}
+                   out: {self.output_node_id}
+                   inov: {self.innovation}
+                   wheight: {self.wheight}"""
