@@ -247,6 +247,20 @@ class Connection:
                    inov: {self.innovation}
                    wheight: {self.weight}"""
 
+
+# show the genomes 
+def show(agent):
+    print(agent)
+    print("node genome")
+
+    for node in agent.node_genome:
+        print(node)
+
+    print("connection genome")
+
+    for node in agent.connection_genome:
+        print(node)
+
 # debug
 if __name__ == "__main__":
     inov = {}
@@ -262,4 +276,8 @@ if __name__ == "__main__":
     b.add_node_mutation(1)
 
     c = a.crossover(b)
+
+    show(a)
+    show(b)
+    show(c)
     
